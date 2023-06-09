@@ -79,13 +79,13 @@ class YOLO:
             task (Any, optional): Task type for the YOLO model. Defaults to None.
         """
         self.callbacks = callbacks.get_default_callbacks()
-        self.predictor = None  # reuse predictor
-        self.model = None  # model object
-        self.trainer = None  # trainer object
-        self.task = None  # task type
-        self.ckpt = None  # if loaded from *.pt
-        self.cfg = None  # if loaded from *.yaml
-        self.ckpt_path = None
+        self.predictor = None  # reuse predictor        重用predictor
+        self.model = None  # model object               模型对象
+        self.trainer = None  # trainer object           训练器对象
+        self.task = None  # task type                   任务类型
+        self.ckpt = None  # if loaded from *.pt         权重文件
+        self.cfg = None  # if loaded from *.yaml        配置文件
+        self.ckpt_path = None                           
         self.overrides = {}  # overrides for trainer object
         self.metrics = None  # validation/training metrics
         self.session = None  # HUB session
@@ -97,7 +97,7 @@ class YOLO:
             self.session = HUBTrainingSession(model)
             model = self.session.model_file
 
-        # Load or create new YOLO model
+        # Load or create new YOLO model 根据传入的文件名,分解得到模型类型和创建模型的方式
         suffix = Path(model).suffix
         if not suffix and Path(model).stem in GITHUB_ASSET_STEMS:
             model, suffix = Path(model).with_suffix('.pt'), '.pt'  # add suffix, i.e. yolov8n -> yolov8n.pt
@@ -153,9 +153,9 @@ class YOLO:
         """
         suffix = Path(weights).suffix
         if suffix == '.pt':
-            self.model, self.ckpt = attempt_load_one_weight(weights)
-            self.task = self.model.args['task']
-            self.overrides = self.model.args = self._reset_ckpt_args(self.model.args)
+            self.model, self.ckpt = attempt_load_one_weight(weights)                # 加载模型,得到模型对象和权重内容
+            self.task = self.model.args['task']                                     # 得到任务类型
+            self.overrides = self.model.args = self._reset_ckpt_args(self.model.args)# 
             self.ckpt_path = self.model.pt_path
         else:
             weights = check_file(weights)
